@@ -1,13 +1,16 @@
 package lesson1
 
 import org.junit.jupiter.api.Assertions.assertArrayEquals
+import org.junit.jupiter.api.assertThrows
 import util.PerfResult
 import util.estimate
 import java.io.BufferedWriter
 import java.io.File
+import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.math.abs
 import kotlin.system.measureNanoTime
+import kotlin.test.assertFailsWith
 
 abstract class AbstractTaskTests : AbstractFileTests() {
 
@@ -136,6 +139,14 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         } finally {
             File("temp.txt").delete()
         }
+        try {
+            assertThrows<IllegalArgumentException> {
+                sortTemperatures("input/temp_in2.txt", "temp.txt")
+            }
+        } finally {
+            File("temp.txt").delete()
+        }
+
 
         fun testGeneratedTemperatures(size: Int): PerfResult<Unit> {
             try {
@@ -298,6 +309,22 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         try {
             sortSequence("input/empty.txt", "temp.txt")
             assertFileContent("temp.txt", "")
+        } finally {
+            File("temp.txt").delete()
+        }
+        try {
+            sortSequence("input/seq_in6.txt", "temp.txt")
+            assertFileContent(
+                "temp.txt",
+                """
+                        7
+                        2
+                        3
+                        2
+                        1
+                        1
+                    """.trimIndent()
+            )
         } finally {
             File("temp.txt").delete()
         }
