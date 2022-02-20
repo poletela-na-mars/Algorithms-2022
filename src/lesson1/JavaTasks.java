@@ -101,41 +101,38 @@ public class JavaTasks {
      * 99.5
      * 121.3
      */
-    static public void sortTemperatures(String inputName, String outputName) {
-        //T = O(N*logN)
+    static public void sortTemperatures(String inputName, String outputName) throws IOException {
+        //T = O(N)
         //R = O(N), N - строки в файле
-        try {
+        int minTemp = -2730;
+        int maxTemp = 5000;
+        int[] arr = new int[7731]; //2730 + 5000 + 1
+
+        File inputFile = new File(inputName);
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile))) {
             String str;
-            List<Double> list = new ArrayList<>();
-
-            File inputFile = new File(inputName);
-            FileReader fileReader = new FileReader(inputFile);
-            BufferedReader reader = new BufferedReader(fileReader);
-
             double lineToDouble;
+            int numberToInt;
             while ((str = reader.readLine()) != null) {
                 lineToDouble = Double.parseDouble(str.trim());
                 if (lineToDouble < -273.0 || lineToDouble > 500.0) {
                     throw new IllegalArgumentException();
                 }
-                list.add(lineToDouble);
+                numberToInt = (int) (lineToDouble * 10);
+                arr[numberToInt + Math.abs(minTemp)]++;
             }
+        }
 
-            Collections.sort(list);
-
-            File outputFile = new File(outputName);
-            FileWriter fileWriter = new FileWriter(outputFile);
-            BufferedWriter writer = new BufferedWriter(fileWriter);
-
-            for (Double elem : list) {
-                writer.write(elem + System.lineSeparator());
+        File outputFile = new File(outputName);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
+            for (int i = 0; i < arr.length; i++) {
+                for (int j = 0; j < arr[i]; j++) {
+                    writer.write((double) (minTemp + i) / 10 + System.lineSeparator());
+                }
             }
-            reader.close();
-            writer.close();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
         }
     }
+
 
     /**
      * Сортировка последовательности
@@ -166,20 +163,18 @@ public class JavaTasks {
      * 2
      * 2
      */
-    static public void sortSequence(String inputName, String outputName) {
-        //T = O(N*logN), HashMap = O(logN), для каждой строки = O(N)
+    static public void sortSequence(String inputName, String outputName) throws IOException {
+        //T = O(N), ~ от количества чисел (строк) в файле
         //R = O(N), N - строки в файле
-        try {
-            String str;
-            int max = 0; //число, повторяющееся наибольшее количество раз
-            int maxOccur = 0; //число повторов
-            List<Integer> numbers = new ArrayList<>();
-            List<Integer> numbersToWrite = new ArrayList<>();
-            Map<Integer, Integer> map = new HashMap<>(); //число: сколько раз было записано
+        String str;
+        int max = 0; //число, повторяющееся наибольшее количество раз
+        int maxOccur = 0; //число повторов
+        List<Integer> numbers = new ArrayList<>();
+        List<Integer> numbersToWrite = new ArrayList<>();
+        Map<Integer, Integer> map = new HashMap<>(); //число: сколько раз было записано
 
-            File inputFile = new File(inputName);
-            FileReader fileReader = new FileReader(inputFile);
-            BufferedReader reader = new BufferedReader(fileReader);
+        File inputFile = new File(inputName);
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile))) {
             int lineToInteger;
             while ((str = reader.readLine()) != null) {
                 lineToInteger = Integer.parseInt(str.trim());
@@ -209,20 +204,14 @@ public class JavaTasks {
             for (int i = 0; i < maxOccur; i++) {
                 numbersToWrite.add(max);
             }
+        }
 
-            File outputFile = new File(outputName);
-            FileWriter fileWriter = new FileWriter(outputFile);
-            BufferedWriter writer = new BufferedWriter(fileWriter);
+        File outputFile = new File(outputName);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
 
             for (Integer number : numbersToWrite) {
                 writer.write(number + System.lineSeparator());
             }
-
-            reader.close();
-            writer.close();
-
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
         }
     }
 
