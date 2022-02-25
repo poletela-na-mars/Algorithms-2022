@@ -138,7 +138,7 @@ public class JavaAlgorithms {
      * Единица простым числом не считается.
      */
     static public int calcPrimesNumber(int limit) {
-        //T = O(log(log(n)))
+        //T = O(n*log(log(n)))
         //R = O(N), ~ limit
         if (limit <= 1) return 0;
         Boolean[] arr = new Boolean[limit + 1];

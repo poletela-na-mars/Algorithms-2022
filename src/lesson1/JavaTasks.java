@@ -106,7 +106,7 @@ public class JavaTasks {
         //R = O(N), N - строки в файле
         int minTemp = -2730;
         int maxTemp = 5000;
-        int[] arr = new int[7731]; //2730 + 5000 + 1
+        int[] arr = new int[Math.abs(minTemp) + maxTemp + 1]; //2730 + 5000 + 1 = 7731
 
         File inputFile = new File(inputName);
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFile))) {
