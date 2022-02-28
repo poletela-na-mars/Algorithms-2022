@@ -100,9 +100,79 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
      * Средняя
      */
     @Override
+    //T = O(высота дерева); O(logN) в среднем случае, N - количество узлов. В худшем O(N)
+    //R = O(1)
     public boolean remove(Object o) {
-        // TODO
-        throw new NotImplementedError();
+        if (root == null) return false;
+        int removeValue = (int) o; //значение удаляемого узла
+        Node<T> currentNode = root;
+        Node<T> parentNode = root;
+        boolean isLeftChild = true;
+
+        while ((Integer) currentNode.value != removeValue) {
+            parentNode = currentNode;
+            if (removeValue < (Integer) currentNode.value) {  //если меньше текущего - движение влево
+                currentNode = currentNode.left;
+                isLeftChild = true;
+            } else {                                      //если больше - движение вправо
+                isLeftChild = false;
+                currentNode = currentNode.right;
+            }
+            if (currentNode == null) { //узла нет
+                return false;
+            }
+        }
+
+        //Ситуация 1: у удаляемого узла нет потомков
+        if (currentNode.left == null && currentNode.right == null) {
+            if (currentNode == root) { //если узел - корень, дерево очищается
+                root = null;
+            }
+            else if (isLeftChild) { //если нет, то узел отсоединяется
+                parentNode.left = null;
+            }
+            else  {
+                parentNode.right = null;
+            }
+        }
+
+        //Ситуация 2: у удаляемого узла 1 потомок
+        else if (currentNode.right == null) {   //Ситуация 2.1: есть левый потомок
+            change(currentNode, parentNode, currentNode.left, isLeftChild);
+        } else if (currentNode.left == null) {   //Ситуация 2.2: есть правый потомок
+            change(currentNode,parentNode, currentNode.right, isLeftChild);
+        }
+
+        //Ситуация 3: у удаляемого узла 2 потомка, в этом случае место удаляемого узла занимает самый левый лист
+        //из правого поддерева от удаляемого узла.
+        //То есть на месте удаляемого узла - наименьшее значение (левый лист) в правом поддереве
+        else {
+            Node<T> nParent = currentNode;
+            Node<T> n = currentNode.right; //идем в правое поддерево
+
+            while (n.left != null) {  //движемся к левому листу -> след.элементу по значению после удаляемого
+                nParent = n;
+                n = n.left;
+            }
+            if (n != currentNode.right) { //если преемник не является правым потомком
+                nParent.left = n.right;
+                n.right = currentNode.right;
+            }
+            n.left = currentNode.left;
+            change(currentNode, parentNode, n, isLeftChild);
+        }
+        size--;
+        return true;
+    }
+
+    public void change(Node<T> currentNode, Node<T> parentNode, Node<T> change, boolean isLeftChild) {
+        if (currentNode == root) {
+            root = change;
+        } else if (isLeftChild) {
+            parentNode.left = change;
+        } else {
+            parentNode.right = change;
+        }
     }
 
     @Nullable
@@ -118,9 +188,18 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     }
 
     public class BinarySearchTreeIterator implements Iterator<T> {
+        private Node<T> node;
+        private final Stack<Node<T>> stack = new Stack<>();
+
+        private void pushLeft(Node<T> node){
+            while (node != null) {
+                stack.push(node);
+                node = node.left;
+            }
+        }
 
         private BinarySearchTreeIterator() {
-            // Добавьте сюда инициализацию, если она необходима.
+            pushLeft(root);
         }
 
         /**
@@ -134,9 +213,10 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          * Средняя
          */
         @Override
+        //T = O(1)
+        //R = O(1)
         public boolean hasNext() {
-            // TODO
-            throw new NotImplementedError();
+            return !stack.isEmpty();
         }
 
         /**
@@ -153,9 +233,16 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          * Средняя
          */
         @Override
+        //T = O(1)
+        //R = O(1)
         public T next() {
-            // TODO
-            throw new NotImplementedError();
+            if (hasNext()) {
+                node = stack.pop();
+                pushLeft(node.right);
+            }
+            else throw new NoSuchElementException();
+            if (node == null) throw new NoSuchElementException(); // если все элементы были возвращены
+            return node.value;
         }
 
         /**
@@ -171,10 +258,15 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          * Сложная
          */
         @Override
+        //T = O(высота дерева). O(logN) в среднем случае, N - количество узлов. В худшем O(N)
+        //R = O(1)
         public void remove() {
-            // TODO
-            throw new NotImplementedError();
-        }
+            if (node == null) {
+                throw new IllegalStateException();
+            }
+            BinarySearchTree.this.remove(node.value);
+            node = null;
+    }
     }
 
     /**
