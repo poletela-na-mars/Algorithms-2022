@@ -258,6 +258,27 @@ abstract class AbstractGraphTests {
             setOf(cross["A"], cross["B"], cross["C"], cross["D"]),
             cross.largestIndependentVertexSet()
         )
+
+        //new
+        val newGraph = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            val f = addVertex("F")
+            val g = addVertex("G")
+            addConnection(a, b)
+            addConnection(b, c)
+            addConnection(b, d)
+            addConnection(d, e)
+            addConnection(d, f)
+            addConnection(f, g)
+        }.build()
+        assertEquals(
+            setOf(newGraph["A"], newGraph["C"], newGraph["D"], newGraph["G"]),
+            newGraph.largestIndependentVertexSet()
+        )
     }
 
     fun longestSimplePath(longestSimplePath: Graph.() -> Path) {
@@ -351,6 +372,25 @@ abstract class AbstractGraphTests {
         }.build()
         val longestPath3 = graph3.longestSimplePath()
         assertEquals(6, longestPath3.length)
+
+        //new
+        val graph4 = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            val f = addVertex("F")
+            val g = addVertex("G")
+            addConnection(a, b)
+            addConnection(b, c)
+            addConnection(b, d)
+            addConnection(d, e)
+            addConnection(d, f)
+            addConnection(f, g)
+        }.build()
+        val longestPath4 = graph4.longestSimplePath()
+        assertEquals(4, longestPath4.length)
     }
 
     fun baldaSearcher(baldaSearcher: (String, Set<String>) -> Set<String>) {
