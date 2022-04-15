@@ -94,7 +94,7 @@ public class JavaGraphTasks {
      */
     public static Set<Graph.Vertex> largestIndependentVertexSet(Graph graph) {
         //T = O(вершины + ребра)
-        //R = O(вершины)
+        //R = O(вершины * вершины)
 
         Set<Graph.Vertex> vertices = graph.getVertices();
         if (vertices.isEmpty()) {
@@ -149,8 +149,9 @@ public class JavaGraphTasks {
      * Ответ: A, E, J, K, D, C, H, G, B, F, I
      */
     public static Path longestSimplePath(Graph graph) {
-        //T = O(вершины + ребра)
-        //R = O(вершины)
+        //T = О(вершины * ребра)
+        // Для каждого ребра составляется столько paths, сколько вершин
+        //R = O(вершины * ребра)
 
         Path longest = new Path();
         Stack<Path> paths = new Stack<>();
