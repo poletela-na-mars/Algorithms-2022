@@ -4,6 +4,12 @@ import kotlin.test.assertEquals
 
 abstract class AbstractDynamicTests {
     fun longestCommonSubSequence(longestCommonSubSequence: (String, String) -> String) {
+        //new
+        assertEquals("", longestCommonSubSequence("", "строка"))
+        assertEquals("одинаковые", longestCommonSubSequence("одинаковые", "одинаковые"))
+        assertEquals("  ", longestCommonSubSequence("  ", "  "))
+        assertEquals("АН", longestCommonSubSequence("рАзНые", "РАЗНЫЕ"))
+        //
         assertEquals("", longestCommonSubSequence("мой мир", "я"))
         assertEquals("1", longestCommonSubSequence("1", "1"))
         assertEquals("13", longestCommonSubSequence("123", "13"))
@@ -40,6 +46,11 @@ abstract class AbstractDynamicTests {
     fun longestIncreasingSubSequence(longestIncreasingSubSequence: (List<Int>) -> List<Int>) {
         assertEquals(listOf(), longestIncreasingSubSequence(listOf()))
         assertEquals(listOf(1), longestIncreasingSubSequence(listOf(1)))
+        //new
+        assertEquals(listOf(2), longestIncreasingSubSequence(listOf(2, 2, 2)))
+        assertEquals(listOf(3), longestIncreasingSubSequence(listOf(3, 1, 1)))
+        assertEquals(listOf(1, 2, 3, 4, 7, 8, 9), longestIncreasingSubSequence(listOf(1, 2, 6, 3, 4, 7, 8, 9)))
+        //
         assertEquals(listOf(1, 2), longestIncreasingSubSequence(listOf(1, 2)))
         assertEquals(listOf(2), longestIncreasingSubSequence(listOf(2, 1)))
         assertEquals(

@@ -2,7 +2,7 @@ package lesson7;
 
 import kotlin.NotImplementedError;
 
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class JavaDynamicTasks {
@@ -19,7 +19,39 @@ public class JavaDynamicTasks {
      * При сравнении подстрок, регистр символов *имеет* значение.
      */
     public static String longestCommonSubSequence(String first, String second) {
-        throw new NotImplementedError();
+        //T = O(длина первой строки * длина второй строки)
+        //R = O(длина первой строки * длина второй строки)
+
+        int lengthFirst = first.length();
+        int lengthSecond = second.length();
+
+        if (lengthFirst == 0 || lengthSecond == 0) return "";
+        if (first.equals(second)) return first;
+
+        int[][] longest = new int[lengthFirst + 1][lengthSecond + 1];
+        for (int i = 1; i < lengthFirst + 1; i++) {
+            for (int j = 1; j < lengthSecond + 1; j++) {
+                if (first.charAt(i - 1) == second.charAt(j - 1)) longest[i][j] = longest[i - 1][j - 1] + 1;
+                else  longest[i][j] = Math.max(longest[i - 1][j],longest[i][j - 1]);
+            }
+        }
+
+        StringBuilder result = new StringBuilder();
+        int i = lengthFirst;
+        int j = lengthSecond;
+
+        while (i != 0 && j != 0) {
+            if (first.charAt(i - 1) == second.charAt(j - 1)) {
+                result.append(first.charAt(i - 1));
+                i--;
+                j--;
+            }
+            else if (longest[i - 1][j] == longest[i][j]) i--;
+            else j--;
+        }
+
+        result.reverse();
+        return String.valueOf(result);
     }
 
     /**
@@ -34,8 +66,59 @@ public class JavaDynamicTasks {
      * то вернуть ту, в которой числа расположены раньше (приоритет имеют первые числа).
      * В примере ответами являются 2, 8, 9, 12 или 2, 5, 9, 12 -- выбираем первую из них.
      */
+    //getting index of first element, which is greater than list.get(i)
+    public static int doBinarySearch(int [] array, int el) {
+        int middle;
+        int left = 0;
+        int right = array.length - 1;
+        while (left < right) {
+            middle = (left + right) / 2;
+            if (array[middle] < el) right = middle;
+            else left = middle + 1;
+        }
+        return left;
+    }
+
     public static List<Integer> longestIncreasingSubSequence(List<Integer> list) {
-        throw new NotImplementedError();
+        //T = O(N * log(N))
+        //R = O(N)
+
+        int size = list.size();
+        if (size == 0) return Collections.emptyList();
+
+        List<Integer> longest = new ArrayList<>(size);
+
+        //array for the smallest last element for a subsequence of length idx
+        int[] arrayForLastElems = new int[size + 1];
+        //position store the idx of element stored at i-th position in arrayForLastElems
+        int[] position = new int[size + 1];
+        position[0] = Integer.MIN_VALUE;
+        int[] previous = new int[size];
+
+        int length  = 0;
+
+        Arrays.fill(arrayForLastElems, Integer.MIN_VALUE);
+        arrayForLastElems[0] = Integer.MAX_VALUE;
+
+        int j;
+        for (int i = size - 1; i >= 0; i--) {
+            j = doBinarySearch(arrayForLastElems, list.get(i));
+            if (arrayForLastElems[j - 1] > list.get(i) && arrayForLastElems[j] < list.get(i)) {
+                arrayForLastElems[j] = list.get(i);
+                position[j] = i;
+                previous[i] = position[j - 1];
+                length = Math.max(j, length);
+            }
+        }
+
+        int currentPos = position[length];
+        //restore answer
+        while (currentPos != Integer.MIN_VALUE) {
+            longest.add(list.get(currentPos));
+            currentPos = previous[currentPos];
+        }
+
+        return longest;
     }
 
     /**
