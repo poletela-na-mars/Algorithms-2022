@@ -94,7 +94,7 @@ public class JavaGraphTasks {
      */
     public static Set<Graph.Vertex> largestIndependentVertexSet(Graph graph) {
         //T = O(вершины + ребра)
-        //R = O(число независимых подмножеств в графе)
+        //R = O(вершины * вершины) храним множество, которое максимум вмещает в себя V множеств из V вершин
 
         Set<Graph.Vertex> vertices = graph.getVertices();
         if (vertices.isEmpty()) {
@@ -149,8 +149,7 @@ public class JavaGraphTasks {
      * Ответ: A, E, J, K, D, C, H, G, B, F, I
      */
     public static Path longestSimplePath(Graph graph) {
-        //T = О((paths.size())! * 2^(paths.size()) * вершины)
-        //paths.size() (глубина)
+        //T = О(V * V^V) для каждой вершины ищем простые пути в каждую из вершин
         //R = O(вершины * ребра)
 
         Path longest = new Path();
